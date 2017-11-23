@@ -1,0 +1,25 @@
+.headers on
+.mode csv
+.output data.csv
+
+SELECT DISTINCT 
+       bls_data.year,
+       bls_state.state_text,
+       industry_grouped.description, 
+       bls_category.group_name, 
+       bls_category.description, 
+       bls_data.value
+FROM bls_series INNER JOIN industry_grouped
+ON bls_series.industry_code = industry_grouped.industry_code 
+INNER JOIN bls_category ON bls_series.category_code = bls_category.category_code
+INNER JOIN bls_data ON bls_series.series_id = bls_data.series_id
+INNER JOIN bls_state ON bls_series.state_code = bls_state.state_code
+WHERE datatype_code = '7' AND bls_series.state_code <> '00'
+AND ownership_code <> '0' 
+AND bls_series.case_code = '3' AND bls_series.industry_code <> '000000'
+AND bls_series.category_code <> '00X'
+--AND bls_series.state_code = '13'
+AND bls_data.year = '2015'
+--AND begin_year = end_year
+ORDER BY industry_grouped.description;
+
