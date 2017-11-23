@@ -15,7 +15,13 @@ doc2 <- gsub("var statesData = ", "", doc)
 write(doc2, file = "tempgeo.json")
 states <- geojson_read("tempgeo.json", what = "sp")
 
-pal <- colorNumeric(palette="magma",domain = df$values)
+group.var <- "Age"
+desc.var <- "16-19"
+
+df.sum <- df %>% filter(group_name == group.var & description.1 == desc.var) %>% 
+  group_by(state_text,group_name,description.1) %>% summarise( median = median(value))
+
+pal <- colorNumeric(palette="YlOrRd",domain = df.sum$median)
 
 
 m <- leaflet(states) %>%
@@ -23,6 +29,11 @@ m <- leaflet(states) %>%
   addProviderTiles("MapBox", options = providerTileOptions(
     id = "mapbox.light",
     accessToken = "pk.eyJ1IjoibW9yZ2FuamFjb2J1cyIsImEiOiJjamFjbzV6NGcwYzlzMzNwZDhmdmpvdDdlIn0.ZwTyMmjBOX_Qh_mjZ7FeFQ")) %>%
-    addPolygons()
+    addPolygons(fillColor = ~pal(df.sum$median),
+                weight = 2,
+                opacity = 1,
+                color = "white",
+                dashArray = "3",
+                fillOpacity = 0.7)
 
 m
