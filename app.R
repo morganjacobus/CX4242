@@ -11,27 +11,25 @@ library(shiny)
 library(leaflet)
 library(geojsonio)
 library(dplyr)
+library(sp)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
    
   # Application title
   titlePanel("CX4242 Test Project"),
   
-  # Sidebar with a slider input for number of bins 
-  sidebarLayout(position = "right",
-                sidebarPanel(
+  tabsetPanel(
+    tabPanel("National Median Days Away From Work",
+        fluidRow(leafletOutput("map"),
+                wellPanel(
                   selectInput("Industry",label = "Select Industry",
                               choices = industry),
                   selectInput("Predictor", label = "Select Predictor",
                               choices = predictors)
-                ),
-                
-                # Show a plot of the generated distribution
-                mainPanel(
-                  leafletOutput("map")
+                )
       )
    )
-)
+))
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -41,14 +39,16 @@ server <- function(input, output) {
   filteredData <- reactive({df[df$description == input$industry,]
   })
   
-  df %>% group_by(state_text) %>% summarise( median = median(value))
+  pal <- colorNumeric(palette="magma",domain = df$values)
+  
+  df %>% group_by(state_text,group_name,description.1) %>% summarise( median = median(value))
   
   output$map <- renderLeaflet({
     
-  leaflet() %>%
-      addProviderTiles(providers$Stamen.TonerLite,
-        options = providerTileOptions(noWrap = TRUE)
-  )
+  leaflet(states) %>%
+      addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 1,
+                  color = ~pal(df$values))
+  
   })
 }
 
