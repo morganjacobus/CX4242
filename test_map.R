@@ -2,7 +2,7 @@ library(leaflet)
 library(geojsonio)
 library(geojson)
 library(dplyr)
-
+library(spdplyr)
 
 url <- "https://raw.githubusercontent.com/alignedleft/d3-book/master/chapter_14/us-states.json"
 states <- geojson_read(url,method = "local",what = "sp")
@@ -16,6 +16,7 @@ desc.var <- "16-19"
 df.sum <- df %>% filter(group_name == group.var & description.1 == desc.var) %>% 
   group_by(state_text,group_name,description.1) %>% summarise( median = median(value))
 
+states <- states %>% filter(name %in% df.sum$state_text)
 
 states@data <- merge(states@data,df.sum,by.x="name",by.y="state_text")
 
