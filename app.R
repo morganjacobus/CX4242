@@ -20,23 +20,30 @@ ui <- fluidPage(
   
   tabsetPanel(
     tabPanel("National Median Days Away From Work",
-        fluidRow(leafletOutput("map"),
-                wellPanel(
+        sidebarLayout(position = "right",
+            sidebarPanel(
                   selectInput("Industry",label = "Select Industry",
                               choices = industry),
                   selectInput("Predictor", label = "Select Predictor",
-                              choices = predictors)
-                )
-      )
-   )
+                              choices = predictors),
+                  uiOutput("valueSelection")
+                ),
+        mainPanel(leafletOutput("map"))
+        )
+   ),
+   tabPanel("Days Away From Work Prediction Model")
 ))
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
   
+  #Update Value select box
+  output$valueSelection <- renderUI({
+              selectInput("Value","Select value",choices = unique(df[df$description == input$Industry & df$group_name == input$Predictor,]$description.1))
+  })
   
-  filteredData <- reactive({df[df$description == input$industry,]
+  filteredData <- reactive({df[df$description == input$Industry,]
   })
   
   pal <- colorNumeric(palette="magma",domain = df$values)
