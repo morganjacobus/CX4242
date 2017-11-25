@@ -3,17 +3,10 @@ library(geojsonio)
 library(geojson)
 library(dplyr)
 
-url <- "http://leafletjs.com/examples/choropleth/us-states.js"
 
-# read as text file
-doc <- readLines(url)
+url <- "https://raw.githubusercontent.com/alignedleft/d3-book/master/chapter_14/us-states.json"
+states <- geojson_read(url2,method = "local",what = "sp")
 
-# remove the javascript assignment at the front 
-doc2 <- gsub("var statesData = ", "", doc)
-
-# write out as a temp file and read
-write(doc2, file = "tempgeo.json")
-states <- geojson_read("tempgeo.json", what = "sp")
 
 group.var <- "Age"
 desc.var <- "16-19"
