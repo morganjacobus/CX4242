@@ -28,7 +28,8 @@ ui <- fluidPage(
                               choices = predictors),
                   uiOutput("valueSelection")
                 ),
-        mainPanel(leafletOutput("map"))
+        #mainPanel(leafletOutput("map"))
+        mainPanel(tableOutput("values"))
         )
    ),
    tabPanel("Days Away From Work Prediction Model")
@@ -43,20 +44,36 @@ server <- function(input, output) {
               selectInput("Value","Select value",choices = unique(df[df$description == input$Industry & df$group_name == input$Predictor,]$description.1))
   })
   
-  filteredData <- reactive({df[df$description == input$Industry,]
-  })
+  filteredData <- reactive({df %>% 
+                      filter(df$description == input$Industry & df$group_name == input$Predictor & df$description.1 == input$Value) %>%
+                      group_by(state_text,group_name,description.1) %>% summarise( median = median(value))
+})
   
-  pal <- colorNumeric(palette="magma",domain = df$values)
+  filteredData2 <- reactive({filteredData() %>%
+                                      select("group_name","state_text","median")})
   
-  df %>% group_by(state_text,group_name,description.1) %>% summarise( median = median(value))
+  output$values <- renderTable({filteredData2()})
+  
+  #colorpal <- reactive({colorNumeric(palette="YlOrRd",domain = filteredData2()$median)})
   
   output$map <- renderLeaflet({
     
-  leaflet(states) %>%
-      addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 1,
-                  color = ~pal(df$values))
+  leaflet(states) #%>%
+      #addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 1,
+       #           color = ~pal(df))
   
   })
+  
+  # observe({
+  # 
+  #  data = filteredData2()
+  #  pal <- reactive({colorNumeric(palette="YlOrRd",domain = data$median)})
+  # 
+  #  leafletProxy("map",data = data[c("state_text","median")]) %>%
+  #    addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 1,
+  #                color = ~pal(data$median))
+  # })
+  
 }
 
 # Run the application 
