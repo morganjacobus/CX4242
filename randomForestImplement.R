@@ -9,15 +9,15 @@ event2015 <- occupationalInjuries[occupationalInjuries$group_name=='Event' & occ
 train=sample(1:nrow(age2015),300)
 train2=sample(1:nrow(nature2015),300)
 train3=sample(1:nrow(event2015),300)
-oob.err=double(2)
-test.err=double(2)
-oob.err2 = double(2)
-test.err2 = double(2)
-oob.err3 = double(2)
-test.err3 = double(2)
+oob.err=double(3)
+test.err=double(3)
+oob.err2 = double(3)
+test.err2 = double(3)
+oob.err3 = double(3)
+test.err3 = double(3)
 
 #mtry is no of Variables randomly chosen at each split
-for(mtry in 1:2) 
+for(mtry in 1:3) 
 {
   rf=randomForest(value ~ state_text + description , data = age2015 , subset = train,mtry=mtry,ntree=400)
   rf2=randomForest(value ~ state_text + description , data = nature2015 , subset = train2,mtry=mtry,ntree=400) 
