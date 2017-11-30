@@ -8,10 +8,16 @@
 #
 
 library(shiny)
-library(leaflet)
-library(geojsonio)
 library(dplyr)
-library(sp)
+
+df <- read.csv("data_grouped.csv",header= TRUE, sep=",")
+df$state_code <- state.abb[match(df$state_name,state.name)]
+industry <- unique(df$industry)
+predictors <- unique(df$predictor)
+#df.group <- df %>% group_by(state_text,state_code,description,group_name,description.1) %>% summarise( median = median(value))
+df$hover <- with(df, paste(df$state_name, '<br>', df$predictor, df$attribute, "<br>",
+                                   "Median DAFW", df$average))
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
    
@@ -28,51 +34,56 @@ ui <- fluidPage(
                               choices = predictors),
                   uiOutput("valueSelection")
                 ),
-        #mainPanel(leafletOutput("map"))
-        mainPanel(tableOutput("values"))
+        mainPanel(plotlyOutput("map"))
         )
    ),
    tabPanel("Days Away From Work Prediction Model")
 ))
 
-# Define server logic required to draw a histogram
+
 server <- function(input, output) {
    
-  
-  #Update Value select box
+   #Update Value select box
   output$valueSelection <- renderUI({
-              selectInput("Value","Select value",choices = unique(df[df$description == input$Industry & df$group_name == input$Predictor,]$description.1))
+              selectInput("Value","Select value",choices = unique(df[df$industry == input$Industry & df$predictor == input$Predictor,]$attribute))
   })
   
-  filteredData <- reactive({df %>% 
-                      filter(df$description == input$Industry & df$group_name == input$Predictor & df$description.1 == input$Value) %>%
-                      group_by(state_text,group_name,description.1) %>% summarise( median = median(value))
+  filteredData <- reactive({
+        df.filter <-  df %>% filter(industry == input$Industry, predictor == input$Predictor,attribute == input$Value) #%>%
+                     
 })
   
-  filteredData2 <- reactive({filteredData() %>%
-                                      select("group_name","state_text","median")})
+ 
+   # output$values <- renderTable({
+   #   filteredData()
+   # })
   
-  output$values <- renderTable({filteredData2()})
   
-  #colorpal <- reactive({colorNumeric(palette="YlOrRd",domain = filteredData2()$median)})
-  
-  output$map <- renderLeaflet({
-    
-  leaflet(states) #%>%
-      #addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 1,
-       #           color = ~pal(df))
-  
+  output$map <- renderPlotly({
+     l <- list(color = toRGB("white"), width = 2)
+
+     g <- list(
+       scope = 'usa',
+       projection = list(type = 'albers usa'),
+       showlakes = TRUE,
+       lakecolor = toRGB('white')
+     )
+
+     plot_geo(filteredData(), locationmode = 'USA-states') %>%
+       add_trace(
+         z = ~average, text = ~hover, locations = ~state_code,
+         color = ~average, colors = 'YlOrRd'
+       ) %>%
+       colorbar(title = "Days") %>%
+       layout(
+         title = 'Median DAFW By State<br>(Hover for breakdown)',
+         geo = g
+       )
+
   })
   
-  # observe({
-  # 
-  #  data = filteredData2()
-  #  pal <- reactive({colorNumeric(palette="YlOrRd",domain = data$median)})
-  # 
-  #  leafletProxy("map",data = data[c("state_text","median")]) %>%
-  #    addPolygons(stroke = FALSE, smoothFactor = 0.2, fillOpacity = 1,
-  #                color = ~pal(data$median))
-  # })
+  
+  
   
 }
 
