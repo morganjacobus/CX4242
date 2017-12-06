@@ -16,7 +16,10 @@ safeTree_predict <- function(industryName, predictor, attribute) {
     }
   }
   userPrediction <- predict(rf, userChoice)
-  return(userPrediction)
+  plot(rf) # plots the error rate vs the number of trees
+  varImpPlot(rf) # plots the importance of the attributes being used in rf model
+  return(userPrediction) # the predicted value of the regression model
 }
 
-print(safeTree_predict('Accommodation and Food Services', 'Event', 'Falls, slips, trips'))
+a <- safeTree_predict('Accommodation and Food Services', 'Age', '16-19')
+print(a)
