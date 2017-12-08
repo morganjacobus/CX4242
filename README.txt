@@ -35,7 +35,7 @@ Once you are in the directory where you want to run safeTree, (should be same di
 
 
 3.2 File Structure
-Once all software is loaded to your machine, create a directory folder with the structure as follow:
+Once all software and data is loaded and cleaned, create a directory folder with the structure as follow:
 			BLS_Injury_Viz/
 				|---data/
 						|---sqlite3.exe
