@@ -23,7 +23,7 @@ Should you decide to download the flat files from the BLS Web Directory, the ful
 					$sqlite3 < BLS_IN.txt > BLS_OUT.txt
 					Note: This will take over 10 minutes to run.
 					
-The BLS_IN.txt file will export two CSV files named "data.csv" and "data_grouped.csv". These files will house all the data needed to create the web application.
+The BLS_IN.txt file will export two CSV files named "data.csv", "data_grouped.csv", "predictors.csv", and "industries.csv". These files will house all the data needed to create the web application.
 
 3. EXECUTION
 The instructions provided in 3.1 document how to clean the data from the sqlite output. The instructions provided in 3.2 document the proper file structure after everything has been imported and cleaned. The instructions provided in 3.3 document how to run the application with the toy data sets.
