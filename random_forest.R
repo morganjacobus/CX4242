@@ -1,5 +1,5 @@
 safeTree_predict <- function(industryName, predictor, attribute,notrees,mtrys) {
-  userChoice <- read.csv(paste(c('~/Georgia Tech/CX4242/project_files/database/Industry/', industryName, '/', tolower(predictor), '_toy.csv'), collapse = ''))
+  userChoice <- read.csv(paste(c('~/PATH TO INDUSTRY FOLDER', industryName, '/', tolower(predictor), '_toy.csv'), collapse = ''))
   userChoice <- userChoice[1:nrow(userChoice),2:ncol(userChoice)]
   rf <- randomForest(value ~ ., data = userChoice, importance = TRUE, mtry= mtrys, ntree = notrees)
   userChoice <- userChoice[1,]
