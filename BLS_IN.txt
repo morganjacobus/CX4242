@@ -250,11 +250,11 @@ ORDER BY industry_grouped.description;
 .headers on
 .mode csv
 .once predictors.csv
-select distinct group_name from bls_category where group_name <> "All" and group_name <> "Industry" and group_name <> "Musculoskeletal";
+select distinct group_name AS predictor from bls_category where group_name <> "All" and group_name <> "Industry" and group_name <> "Musculoskeletal";
 
 .headers on
 .mode csv
 .once industries.csv
-select distinct description from naics_category;
+select distinct description AS industry from naics_category;
 
 
