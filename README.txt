@@ -16,7 +16,28 @@ RStudio - Follow the link to download the correct version of RStudio for your ma
 
 In RStudio you will need to install the following packages: shiny, dplyr, csvread, randomForest, party and plotly. Install by clicking "Install" in the bottom right navigation bar under "Packages" and copy "shiny, dplyr, csvread, randomForest, party, plotly" into the input box.
 
-2.2 File Structure
+2.2 Importing Data
+
+								
+Should you decide to download the flat files from the BLS Web Directory, the full data files the sample data sets are sampled from can be created by running the following code in the shell, assuming the DATA folder is the working directory: 
+					$sqlite3 < BLS_IN.txt > BLS_OUT.txt
+					Note: This will take over 10 minutes to run.
+					
+The BLS_IN.txt file will export two CSV files named "data.csv" and "data_grouped.csv". These files will house all the data needed to create the web application.
+
+3. EXECUTION
+All data necessary to run the application has been included in the folder labeled "visual". The instructions provided in 3.1 document how to obtain the data needed for the application from the sqlite output. The instructions provided in 3.2 document how to run the application with the toy data sets.
+
+3.1 Data Cleaning
+
+
+To manipulate the data into a structure that can be read by the application, the output files from 2.1 will be imported and cleaned using the Data_Clean.R script. This is only necessary if you do not choose to use the sample datasets.
+
+Open RStudio and load the Data_Clean.R file. 
+
+Once all packages have been installed, select the block of code in the Data_Clean.R file and hit "Run". The R script will manipulate and clean the data then export it to the folder the application file, app.r, is located in. Again, this is only necessary if the sample datasets are not used.
+
+3.2 File Structure
 Once all software is loaded to your machine, create a directory folder with the structure as follow:
 			BLS_Injury_Viz/
 				|---data/
@@ -37,36 +58,18 @@ Once all software is loaded to your machine, create a directory folder with the 
 								|---age_toy.csv
 								...
 							...
-								
-Should you decide to download the flat files from the BLS Web Directory, the full data files the sample data sets are sampled from can be created by running the following code in the shell, assuming the DATA folder is the working directory: 
-					$sqlite3 < BLS_IN.txt > BLS_OUT.txt
-					Note: This will take over 10 minutes to run.
-					
-The BLS_IN.txt file will export two CSV files named "data.csv" and "data_grouped.csv". These files will house all the data needed to create the web application.
 
-3. EXECUTION
-All data necessary to run the application has been included in the folder labeled "visual". The instructions provided in 3.1 document how to obtain the data needed for the application from the sqlite output. The instructions provided in 3.2 document how to run the application with the toy data sets.
+3.3 Application with Toy Dataset
 
-3.1 Data Cleaning
-
-
-To manipulate the data into a structure that can be read by the application, the output files from 2.1 will be imported and cleaned using the Data_Clean.R script. This is only necessary if you do not choose to use the sample datasets.
-
-Open RStudio and load the Data_Clean.R file. 
-
-Once all packages have been installed, select the block of code in the Data_Clean.R file and hit "Run". The R script will manipulate and clean the data then export it to the folder the application file, app.r, is located in. Again, this is only necessary if the sample datasets are not used.
-
-3.2 Application with Toy Dataset
-
-3.2.1 
+3.3.1 
 Open RStudio and set the working directory using the "More" button to the folder the script lives in.
 Load the "app.R" and "random_forest.R" script found at the path "BLS_Injury_Viz/visual/application". 
 
-3.2.2
+3.3.2
 In the "app.R" script, alter the read.csv() file path that reads "CHANGE FILE PATH" to reflect the destiantion of the "data_grouped.csv" file.
 In the "random_forest.R" script alter the string in the function that reads "CHANGE FILE PATH" to reflect the destination of the folder that houses the cleaned, random forest compatible Industry datasets. 
 
-3.2.3
+3.3.3
 The application is run through the app.R script. To run the application, press "Run App" to start the application.
 Upon pressing "Run App", a GUI should appear that houses the visualization and prediction tool. Adjust the parameters and explore the workplace injury data like never before!
 
