@@ -1,5 +1,4 @@
---.open cs.db
-.open test.db
+.open cs.db
 .separator '	'
 .headers ON
 
