@@ -7,26 +7,18 @@ library(party)
 set.seed(400)
 
 source("random_forest.R")
-
-
-
 df <- read.csv("~/Georgia Tech/CX4242/project_files/application/final_app/data_grouped.csv",header = TRUE,
                colClasses = c("integer", "character","character","character","character","character","numeric","character"))
-#df$state_code <- state.abb[match(df$state_name,state.name)]
 industry <- unique(df$industry)
 predictors <- unique(df$predictor)
-#df.group <- df %>% group_by(state_text,state_code,description,group_name,description.1) %>% summarise( median = median(value))
-#df$hover <- with(df, paste(df$state_name, '<br>', df$predictor, df$attribute, "<br>",
- #                          "Median DAFW", df$average))
-
 
 ui <- fluidPage(theme = "bootstrap.css",
   
   # Application title
-  titlePanel("CX4242 Test Project"),
+  titlePanel("SafeTree: Workplace Injury Data Visualization and Prediction Tool"),
   
   tabsetPanel(
-    tabPanel("National Median Days Away From Work",
+    tabPanel("National Average Days Away From Work",
              sidebarLayout(position = "right",
                            sidebarPanel(tags$head(tags$style(type="text/css", "#loadmessage {
                position: fixed;
@@ -38,10 +30,13 @@ ui <- fluidPage(theme = "bootstrap.css",
                font-weight: bold;
                font-size: 100%;
                color: #000000;
-               background-color: #CCFF66;
+               background-color: #ADD8E6;
                z-index: 105;
              }
-          ")),
+          ")),tags$style(type="text/css",
+                         ".shiny-output-error { visibility: hidden; }",
+                         ".shiny-output-error:before { visibility: hidden; }"
+          ),
                              selectInput("Industry",label = "Select Industry",
                                          choices = industry,
                                          selected = "Accommodation and Food Services"),
@@ -52,7 +47,7 @@ ui <- fluidPage(theme = "bootstrap.css",
                              conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                               tags$div("Loading...",id="loadmessage"))
                            ),
-                             mainPanel(plotlyOutput("map"))
+                             mainPanel(plotlyOutput("map"),height = 6)
                            #tableOutput("values")
              )
     ),
@@ -66,10 +61,16 @@ ui <- fluidPage(theme = "bootstrap.css",
                                          choices = predictors,
                                          selected = "Age"),
                              uiOutput("valueSelection2"),
-                             sliderInput("ntrees","Select Number of Trees",min = 10,max = 100,
-                                         value = 10,step = 10)
+                             sliderInput("ntrees","Select Number of Trees",min = 100,max = 1000,
+                                         value = 1000,step = 100),
+                             uiOutput("mtry"),
+                             conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                                              tags$div("Loading...",id="loadmessage"))
                            ),
-                           mainPanel(plotOutput("error_plot"))
+                           mainPanel(verticalLayout(htmlOutput("prediction"),
+                                                    verbatimTextOutput("rf"),
+                                                    plotOutput("error_plot"),
+                                                    plotOutput("imp_plot")))
              )
     )
   ))
@@ -88,19 +89,26 @@ server <- function(input, output) {
                 selected = "16-19")
   })
   
+  output$mtry <- renderUI({
+    sliderInput("mtry","Select No. of Variables Sampled",min=1,max=length(unique(df[df$industry == input$Industry2 & df$predictor == input$Predictor2,]$attribute))-1,
+                                                                          value=length(unique(df[df$industry == input$Industry2 & df$predictor == input$Predictor2,]$attribute))-1,
+                                                                                       step = 1)
+  })
+  
   filteredData <- reactive({
     df.filter <-  df %>% filter(industry == input$Industry, predictor == input$Predictor,attribute == input$Value) #%>%
     
   })
   
-  rf_output <- reactive({safeTree_predict(input$Industry2, input$Predictor2, input$Value2)})
+  rf_output <- reactive({safeTree_predict(input$Industry2, input$Predictor2, input$Value2,input$ntrees,input$mtry)})
   
-  output$error_plot <- renderPlot({plot(rf_output()$rf)})
+  output$error_plot <- renderPlot({plot(rf_output()$rf,main="Error Plot for Random Forest Regression"
+                                      )})
+  output$imp_plot <- renderPlot({varImpPlot(rf_output()$rf,main="Variable Importance Plot")})
   
-  output$values <- renderTable({
-     filteredData()
-   })
+  output$prediction <- renderText(paste("<font size=\"5\">","The predicted days away from work is: ","</font>","<font size=\"5\"><b>",round(rf_output()$prediction,3),"</b></font>",sep=""))
   
+  output$rf <- renderText(print(rf_output()$rf))
     
   output$map <- renderPlotly({
     
@@ -119,15 +127,12 @@ server <- function(input, output) {
         color = ~average, colors = 'YlOrRd'
       ) %>%
       colorbar(title = "Days") %>%
-      layout(margin = list(t=105),
+      layout(margin = list(t=105),height = 500,
         title = 'Median DAFW By State<br>(Hover for breakdown)',
         geo = g
       )
     
   })
-  
-  
-  
   
 }
 
