@@ -28,20 +28,32 @@ The BLS_IN.txt file will export two CSV files named "data.csv", "data_grouped.cs
 3. EXECUTION
 The instructions provided in 3.1 document how to clean the data from the sqlite output. The instructions provided in 3.2 document the proper file structure after everything has been imported and cleaned. The instructions provided in 3.3 document how to run the application with the toy data sets.
 
-3.1 Data Cleaning
+3.1 Data Cleaning and Initial Random Forest Model Experiments
 
-3.1.1
-Once you are in the directory where you want to run safeTree, (should be same directory as where Data_Clean.R is located), first change the directory name
+3.1.1 DATA CLEANING
+Once you are in the directory where you want to run safeTree, (should be same directory as where Data_Cleaning.R is located), first change the directory name in lines 8,9,10 to lead into your current directory, i.e. "~/CX4242/project_files/database/industries.csv". Then by running Data_Cleaning.R, you will generate a folder Industry with separate folder for each specific industry, each with a .csv file for each predictor ready to be used in the random forest model. This will approximately take 20 minutes (20 industries, 14 predictors about 300 .csv files to generate by manipulating and reshaping the original dataset)
+
+3.1.2 RANDOM FOREST MODEL EXPERIMENTS
+To see our baseline model for the dataset as a whole, without adding in a predictive capability, simply run safeTree.R. If the DATA CLEANING steps were completed successfully, then this file should run successfully also. The model will cross check the OOB error and test error rate, you will be able to ouput the raw data used to generate Figure 7 in our report. 
 
 
 3.2 File Structure
 Once all software and data is loaded and cleaned, create a directory folder with the structure as follow:
 			BLS_Injury_Viz/
 				|---data/
-						|---sqlite3.exe
-						|---BLS_IN.txt
+					|---sqlite3.exe
+					|---BLS_IN.txt
 				|---clean
-						|---Data_Clean.R
+					|---Data_Cleaning.R
+					|---database
+						|---safeTree.R
+						|---industries.csv
+						|---predictors.csv
+						|---Industry
+							|---Accomodation and Food Services
+								|---age_toy.csv
+								...
+							...
 				|---visual
 					|---application
 						|---app.R
@@ -49,12 +61,7 @@ Once all software and data is loaded and cleaned, create a directory folder with
 						|---random_forest.R
 						|---www
 							|---bootstrap.css
-					|---database
-						|---Industry
-							|---Accomodation and Food Services
-								|---age_toy.csv
-								...
-							...
+					
 
 3.3 Application with Toy Dataset
 
