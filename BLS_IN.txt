@@ -223,7 +223,7 @@ ORDER BY industry_grouped.description;
 
 .headers on
 .mode csv
-.output avg_data.csv
+.output data_grouped.csv
 
 SELECT DISTINCT 
        bls_data.year AS year,
@@ -246,3 +246,15 @@ AND bls_data.year = '2015'
 --AND begin_year = end_year
 GROUP BY year,state_name,state_cd,industry,predictor,attribute
 ORDER BY industry_grouped.description;
+
+.headers on
+.mode csv
+.once predictors.csv
+select distinct group_name from bls_category where group_name <> "All" and group_name <> "Industry" and group_name <> "Musculoskeletal";
+
+.headers on
+.mode csv
+.once industries.csv
+select distinct description from naics_category;
+
+
