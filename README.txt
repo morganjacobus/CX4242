@@ -31,6 +31,7 @@ The instructions provided in 3.1 document how to clean the data from the sqlite 
 3.1 Data Cleaning
 
 3.1.1
+Once you are in the directory where you want to run safeTree, (should be same directory as where Data_Clean.R is located), first change the directory name
 
 
 3.2 File Structure
