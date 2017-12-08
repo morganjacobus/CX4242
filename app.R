@@ -7,7 +7,7 @@ library(party)
 set.seed(400)
 
 source("random_forest.R")
-df <- read.csv("~/Georgia Tech/CX4242/project_files/application/final_app/data_grouped.csv",header = TRUE,
+df <- read.csv("~/PATH TO data_grouped.csv",header = TRUE,
                colClasses = c("integer", "character","character","character","character","character","numeric","character"))
 industry <- unique(df$industry)
 predictors <- unique(df$predictor)
