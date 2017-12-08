@@ -42,6 +42,6 @@ for (j in 2:(nrow(industries))) {
       row.vals[length(colnames.3)] <- dafw
       df.new[row,] <- row.vals
     } 
-    write.csv(df.new, file = paste(c('~/CX4242/project_files/', INDUSTRY, '/', predictors[i,1], '_toy.csv'), collapse = ''))
+    write.csv(df.new, file = paste(c('~/CX4242/project_files/Indsutry', INDUSTRY, '/', predictors[i,1], '_toy.csv'), collapse = ''))
   }
 }
