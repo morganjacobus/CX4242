@@ -13,18 +13,30 @@ sqlite - Follow the link to download the correct version of sqlite for your mach
 R - Follow the link to download the correct version of R for your machine: https://cran.r-project.org/
 
 RStudio - Follow the link to download the correct version of RStudio for your machine (Free version is adequate for this package): https://www.rstudio.com/products/rstudio/download/
-In RStudio you will need to install the following packages: shiny, dplyr, and plotly. Install by clicking "Install" in the bottom right navigation bar under "Packages" and following the prompt.
+In RStudio you will need to install the following packages: shiny, dplyr, csvread, randomForest, party and plotly. Install by clicking "Install" in the bottom right navigation bar under "Packages" and copy "shiny, dplyr, csvread, randomForest, party, plotly" into the input box.
 
 Once all software is loaded to your machine, create a directory folder with the structure as follow:
 			BLS_Injury_Viz/
-				|---DATA/
+				|---data/
 						|---sqlite3.exe
 						|---BLS_IN.txt
-				|---CLEAN
+				|---clean
 						|---Data_Clean.R
-				|---VISUAL
+				|---visual
+					|---application
 						|---app.R
-						|---data files
+						|---data_grouped.csv
+						|---random_forest.R
+						|---www
+							|---bootstrap.css
+					|---database
+						|---Industry
+							|---Accomodation and Food Services
+								|---age_toy.csv
+								...
+							...
+					
+								
 						
 						
 If you decide to download the flat files from the BLS Web Directory, the full data files the sample data sets are sampled from can be created by running the following code in the shell, assuming the DATA folder is the working directory: 
@@ -36,7 +48,8 @@ The BLS_IN.txt file will export two CSV files named "blah " and "blah". These fi
 3. EXECUTION
 To manipulate the data into a structure that can be read by the application, the output files from 2.1 will be imported and cleaned using the Data_Clean.R script. This is only necessary if you do not choose to use the sample datasets.
 
-Open RStudio and load the Data_Clean.R file. Before running the code, open the "Packages" tab in the bottom right navigation bar. Next click install. In the field type "shiny, dplyr, plotly". These are the necessary R packages needed to run the code.
+Open RStudio and load the Data_Clean.R file. 
+
 Once all packages have been installed, select the block of code in the Data_Clean.R file and hit "Run". The R script will manipulate and clean the data then export it to the folder the application file, app.r, is located in. Again, this is only necessary if the sample datasets are not used.
 
 The application is run through the app.R script. To run the application, open RStudio and load the app.R script. If you are running the application with the sample dataset, press "Run App" in the top left corner. If you are using the CSV files from the Data_Clean.R script, navigate to the read.csv() calls in the app.R script and alter the import file names to match the created CSV files. Press "Run App" to start the application.
