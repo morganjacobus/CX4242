@@ -18,7 +18,7 @@ In RStudio you will need to install the following packages: shiny, dplyr, csvrea
 
 2.2 Importing Data
 
-								
+2.2.1
 Should you decide to download the flat files from the BLS Web Directory, the full data files the sample data sets are sampled from can be created by running the following code in the shell, assuming the DATA folder is the working directory: 
 					$sqlite3 < BLS_IN.txt > BLS_OUT.txt
 					Note: This will take over 10 minutes to run.
@@ -26,16 +26,12 @@ Should you decide to download the flat files from the BLS Web Directory, the ful
 The BLS_IN.txt file will export two CSV files named "data.csv" and "data_grouped.csv". These files will house all the data needed to create the web application.
 
 3. EXECUTION
-All data necessary to run the application has been included in the folder labeled "visual". The instructions provided in 3.1 document how to obtain the data needed for the application from the sqlite output. The instructions provided in 3.2 document how to run the application with the toy data sets.
+The instructions provided in 3.1 document how to clean the data from the sqlite output. The instructions provided in 3.2 document the proper file structure after everything has been imported and cleaned. The instructions provided in 3.3 document how to run the application with the toy data sets.
 
 3.1 Data Cleaning
 
+3.1.1
 
-To manipulate the data into a structure that can be read by the application, the output files from 2.1 will be imported and cleaned using the Data_Clean.R script. This is only necessary if you do not choose to use the sample datasets.
-
-Open RStudio and load the Data_Clean.R file. 
-
-Once all packages have been installed, select the block of code in the Data_Clean.R file and hit "Run". The R script will manipulate and clean the data then export it to the folder the application file, app.r, is located in. Again, this is only necessary if the sample datasets are not used.
 
 3.2 File Structure
 Once all software is loaded to your machine, create a directory folder with the structure as follow:
